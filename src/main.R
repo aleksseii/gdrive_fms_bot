@@ -22,11 +22,20 @@ bot$send_message(chat_id,
 drive_auth()
 2
 
-drive_upload("resources/test_file_1.txt",
-             "gdrive_fms_bot_data_examples/test_file_1.txt")
+drive_upload("resources/txt_test_file.txt",
+             "gdrive_fms_bot_data/txt_test_file.txt")
+drive_upload("resources/docx_test_file.docx",
+             "gdrive_fms_bot_data/docx_test_file.docx")
+drive_upload("resources/pdf_test_file.pdf",
+             "gdrive_fms_bot_data/pdf_test_file.pdf")
 
-drive_ls("gdrive_fms_bot_data_examples/")
-drive_browse("gdrive_fms_bot_data_examples/test_file_1.txt")
+drive_ls("gdrive_fms_bot_data/")
+drive_browse("gdrive_fms_bot_data/pdf_test_file.pdf")
 
-drive_rm("gdrive_fms_bot_data_examples/test_file_1.txt")
+
+prefix <- "gdrive_fms_bot_data/"
+for (local_file_name in drive_ls(prefix)[[1]]) {
+    full_file_name <- paste0(prefix, local_file_name)
+    drive_rm(full_file_name)
+}
 
