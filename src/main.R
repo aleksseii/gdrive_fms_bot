@@ -15,7 +15,10 @@ bot_token <- config$telegram$bot$token
 updater <- Updater(token = bot_token)
 
 # connecting to Google Drive
-drive_auth() 
+DRIVE_PREFIX <- "gdrive_fms_bot_data/"
+RESOURCES_PREFIX <- "resources/"
+
+drive_auth()
 2
 
 # loading code from other modules
@@ -26,7 +29,14 @@ source('src/handlers.R')
 # adding handlers to the bot
 updater <- updater +
     start_handler +
-    offer_way_to_operate_handler
+    offer_way_to_operate_handler +
+    enter_operating_way_handler +
+    upload_file_handler +
+    download_file_handler +
+    remove_file_handler +
+    do_upload_file_handler +
+    do_download_file_handler +
+    do_remove_file_handler
     
 
 # run the bot
