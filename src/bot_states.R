@@ -51,7 +51,3 @@ set_wait_for_entering_file_name_to_download <- function() {
 set_wait_for_entering_file_name_to_remove <- function() {
     set_state(STATES$WAIT_FOR_ENTERING_FILE_NAME_TO_REMOVE)
 }
-
-# set_wait_sending_file_state <- function() {
-#     set_state(STATES$WAIT_FOR_SENDING_FILE)
-# }
