@@ -10,3 +10,7 @@ enter_operating_way_handler <- MessageHandler(enter_way_to_operate, MessageFilte
 upload_file_handler <- MessageHandler(upload_file, MessageFilters$upload_file_filter)
 download_file_handler <- MessageHandler(download_file, MessageFilters$download_file_filter)
 remove_file_handler <- MessageHandler(remove_file, MessageFilters$remove_file_filter)
+
+do_upload_file_handler <- MessageHandler(do_upload, MessageFilters$do_upload_file_filter)
+do_download_file_handler <- MessageHandler(do_download, MessageFilters$do_download_file_filter)
+do_remove_file_handler <- MessageHandler(do_remove, MessageFilters$do_remove_file_filter)

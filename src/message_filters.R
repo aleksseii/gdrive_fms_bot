@@ -32,14 +32,20 @@ MessageFilters$remove_file_filter <- BaseFilter(
     }
 )
 
-# MessageFilters$wait_for_sending_file <- BaseFilter(
-#     function(message) {
-#         get_state() == "waiting for sending the file"
-#     }
-# )
-# 
-# MessageFilters$wait_for_entering_file_name <- BaseFilter(
-#     function(message) {
-#         get_state() == "waiting for entering the file name"
-#     }
-# )
+MessageFilters$do_upload_file_filter <- BaseFilter(
+    function(message) {
+        get_state() == STATES$WAIT_FOR_SENDING_FILE_TO_UPLOAD
+    }
+)
+
+MessageFilters$do_download_file_filter <- BaseFilter(
+    function(message) {
+        get_state() == STATES$WAIT_FOR_ENTERING_FILE_NAME_TO_DOWNLOAD
+    }
+)
+
+MessageFilters$do_remove_file_filter <- BaseFilter(
+    function(message) {
+        get_state() == STATES$WAIT_FOR_ENTERING_FILE_NAME_TO_REMOVE
+    }
+)
