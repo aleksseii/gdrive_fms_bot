@@ -26,7 +26,7 @@ source('src/handlers.R')
 # adding handlers to the bot
 updater <- updater +
     start_handler +
-    operate_handler
+    offer_way_to_operate_handler
     
 
 # run the bot

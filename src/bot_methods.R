@@ -51,32 +51,36 @@ offer_way_to_operate <- function(bot, update) {
                     text = operation_on_file_text,
                     reply_markup = reply_keyboard)
     
-    set_wait_operating_way_state()
+    set_enter_operating_way_state()
 }
 
-# bot behavior while operating on files
-enter_way_to_operate <- function(bot, update) {
+# here user enters way to operate the file
+enter_way_to_operate <- function(bot, update){
     
     operation <- update$message$text
-    
-    if (operation == FILE_OPERATIONS$UPLOAD) {
-        print("User should upload file here")
-    } else if (operation == FILE_OPERATIONS$DOWNLOAD) {
-        print("User should name a file to download here")
-    } else if (operation == FILE_OPERATIONS$REMOVE) {
-        print("User should name a file to remove here")
-    } else {
-        print("Wrong operation")
-    }
-    
-    set_wait_operating_way_state()
+    set_state(operation)
 }
 
-# bot behavior on `upload_file` command
+# bot behavior in case user wants to upload new file
 upload_file <- function(bot, update) {
     
+    print("user uploading file")
     send_file_text <- "Send a file that you want to be uploaded on Google Drive:"
-    
+
     bot$sendMessage(chat_id = update$from_chat_id(),
                     text = send_file_text)
+    
+    set_wait_for_sending_file_to_upload()
+}
+
+# bot behavior in case user wants to download existing file
+download_file <- function(bot, update) {
+    print("user downloading file")
+    set_wait_for_entering_file_name_to_download()
+}
+
+# bot behavior in case user wants to remove existing file from Google Drive
+remove_file <- function(bot, update) {
+    print("user removing file")
+    set_wait_for_entering_file_name_to_remove()
 }
