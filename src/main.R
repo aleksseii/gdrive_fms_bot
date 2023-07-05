@@ -1,3 +1,7 @@
+# #########################################################
+#                   Main Application
+# #########################################################
+
 library(telegram.bot)
 library(googledrive)
 library(configr)
@@ -14,6 +18,17 @@ updater <- Updater(token = bot_token)
 drive_auth() 
 2
 
+# loading code from other modules
+source('src/bot_methods.R')
+source('src/message_filters.R')
+source('src/handlers.R')
+
+# adding handlers to the bot
+updater <- updater +
+    start_handler +
+    operate_handler
+    
 
 # run the bot
 updater$start_polling()
+
