@@ -64,23 +64,98 @@ enter_way_to_operate <- function(bot, update){
 # bot behavior in case user wants to upload new file
 upload_file <- function(bot, update) {
     
-    print("user uploading file")
-    send_file_text <- "Send a file that you want to be uploaded on Google Drive:"
-
     bot$sendMessage(chat_id = update$from_chat_id(),
-                    text = send_file_text)
-    
+                    text = "Upload file that you want to be *stored* to Google Drive",
+                    parse_mod = "Markdown")
     set_wait_for_sending_file_to_upload()
 }
 
 # bot behavior in case user wants to download existing file
 download_file <- function(bot, update) {
-    print("user downloading file")
+    
+    bot$sendMessage(chat_id = update$from_chat_id(),
+                    text = "Enter name of the file that you want to *download* from Google Drive",
+                    parse_mod = "Markdown")
     set_wait_for_entering_file_name_to_download()
 }
 
 # bot behavior in case user wants to remove existing file from Google Drive
 remove_file <- function(bot, update) {
-    print("user removing file")
+    
+    bot$sendMessage(chat_id = update$from_chat_id(),
+                    text = "Enter name of the file that you want to *remove* from Google Drive",
+                    parse_mod = "Markdown")
     set_wait_for_entering_file_name_to_remove()
+}
+
+# actually uploading file
+do_upload <- function(bot, update) {
+    document <- update$message$document
+    if (is.null(document)) {
+        bot$sendMessage(chat_id = update$from_chat_id(),
+                        text = "You should have been upload a file, try again")
+        set_start_state()
+        return()
+    }
+    
+    file_id <- document$file_id
+    file_name <- document$file_name
+    
+    local_file_path <- paste0(RESOURCES_PREFIX, file_name)
+    bot$getFile(file_id, local_file_path)
+    
+    drive_file_path <- paste0(DRIVE_PREFIX, file_name)
+    drive_upload(local_file_path, drive_file_path)
+    
+    bot$sendMessage(chat_id = update$from_chat_id(),
+                    text = paste0("Successfully uploaded file named *", file_name, "*"),
+                    parse_mode = "Markdown")
+    set_start_state()
+}
+
+# actually downloading file
+do_download <- function(bot, update) {
+    
+    file_name <- update$message$text
+    all_file_names <- drive_ls(DRIVE_PREFIX)[[1]]
+    
+    local_file_path <- paste0(RESOURCES_PREFIX, file_name)
+    drive_file_path <- paste0(DRIVE_PREFIX, file_name)
+    
+    if (!(file_name %in% list.files(RESOURCES_PREFIX))) {
+        drive_download(drive_file_path, local_file_path)
+    }
+    
+    bot$sendDocument(
+        chat_id = update$from_chat_id(),
+        document = local_file_path,
+        filename = file_name
+    )
+    set_start_state()
+}
+
+# actually removing file
+do_remove <- function(bot, update) {
+    
+    file_name <- update$message$text
+    
+    local_file_path <- paste0(RESOURCES_PREFIX, file_name)
+    drive_file_path <- paste0(DRIVE_PREFIX, file_name)
+    
+    if (file_name %in% list.files(RESOURCES_PREFIX)) {
+        
+        file.remove(local_file_path)
+        drive_rm(drive_file_path)
+        
+        bot$sendMessage(chat_id = update$from_chat_id(),
+                        text = paste0("Successfully removed file named *", file_name, "*"),
+                        parse_mode = "Markdown")
+        set_start_state()
+        return()
+    }
+    
+    bot$sendMessage(chat_id = update$from_chat_id(),
+                    text = paste0("Not found file with name *", file_name, "*"),
+                    parse_mode = "Markdown")
+    set_start_state()
 }
